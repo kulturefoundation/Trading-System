@@ -1,0 +1,26 @@
+name: Run War Room
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Runs every 15 minutes (matches our cooldown!)
+  workflow_dispatch: # Allows you to run it manually
+
+jobs:
+  run-war-room:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt python-dotenv
+
+      - name: Run War Room
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python war_room.py
